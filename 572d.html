@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluación de Inglés - 5° Año CABA (Modelo D)</title>
+    <title>Evaluación de Inglés - 5°7° E.T. 29</title>
     <style>
         :root {
             --primary: #881337;
@@ -74,8 +74,8 @@
 </div>
 
 <div id="start-screen">
-    <h1 style="color: var(--primary); margin-bottom: 5px;">Evaluación de Inglés - 5° Año (CABA)</h1>
-    <p style="color: var(--secondary); font-weight: bold; margin-top: 0;">MODELO D: Youth Filmmaking in San Telmo</p>
+    <h1 style="color: var(--primary); margin-bottom: 5px;">Evaluación de Inglés - 5°7° E.T. 29</h1>
+    <p style="color: var(--secondary); font-weight: bold; margin-top: 0;">Youth Filmmaking in San Telmo</p>
     <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 14px;">
         <strong>⚠️ Condiciones de Evaluación:</strong>
         <ul style="margin-bottom: 0;">
@@ -211,7 +211,7 @@
     window.onload = function() {
         if (localStorage.getItem(EXAM_ID + "_COMPLETED") === "true") {
             document.getElementById("start-screen").innerHTML = `
-                <h1 style="color: var(--danger);">⛔ Evaluación Ya Realizada</h1>
+                <h1 style="color: var(--danger);">⛔ Evaluación ya realizada.</h1>
                 <p>El sistema registró que ya completaste este examen. Solo se permite un único intento.</p>
             `;
         }
@@ -253,7 +253,7 @@
 
             if (timeRemaining <= 0) {
                 clearInterval(timerInterval);
-                alert("¡Tiempo finalizado (30 minutos)! Se descargará tu informe automáticamente.");
+                alert("¡Tiempo finalizado! Se descargará tu informe automáticamente.");
                 finishExam(true);
             }
         }, 1000);
@@ -364,7 +364,7 @@
         ];
 
         let reportBody = `================================================================================\n`;
-        reportBody += `OFFICIAL EXAM REPORT - 5TH YEAR SECONDARY SCHOOL (CABA) | MODEL D\n`;
+        reportBody += `OFFICIAL EXAM REPORT\n`;
         reportBody += `[READ-ONLY PROTECTED DOCUMENT - DO NOT MODIFY]\n`;
         reportBody += `================================================================================\n\n`;
         reportBody += `Student Name:       ${studentName}\n`;
