@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluación de Inglés - 5° Año CABA (Modelo C)</title>
+    <title>Evaluación de Inglés - 5°7° E.T. 29</title>
     <style>
         :root {
             --primary: #4c1d95;
@@ -74,15 +74,15 @@
 </div>
 
 <div id="start-screen">
-    <h1 style="color: var(--primary); margin-bottom: 5px;">Evaluación de Inglés - 5° Año (CABA)</h1>
-    <p style="color: var(--secondary); font-weight: bold; margin-top: 0;">MODELO C: Educational Robotics</p>
+    <h1 style="color: var(--primary); margin-bottom: 5px;">Evaluación de Inglés - 5°7°</h1>
+    <p style="color: var(--secondary); font-weight: bold; margin-top: 0;">Educational Robotics</p>
     <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 14px;">
         <strong>⚠️ Condiciones de Evaluación:</strong>
         <ul style="margin-bottom: 0;">
             <li><strong>Tiempo límite:</strong> 30 minutos exactos.</li>
             <li><strong>Intento único:</strong> No recargues ni cierres la ventana.</li>
             <li><strong>Penalización:</strong> Cada salida de pantalla completa descuenta <strong>0.50 puntos</strong>.</li>
-            <li><strong>Entrega:</strong> Al finalizar se descargará un archivo <code>.txt</code> protegido (solo lectura) para subir a Classroom.</li>
+            <li><strong>Entrega:</strong> Al finalizar, se descargará un archivo <code>.txt</code> protegido (solo lectura) para subir a Classroom.</li>
         </ul>
     </div>
     <div class="form-group">
@@ -211,7 +211,7 @@
     window.onload = function() {
         if (localStorage.getItem(EXAM_ID + "_COMPLETED") === "true") {
             document.getElementById("start-screen").innerHTML = `
-                <h1 style="color: var(--danger);">⛔ Evaluación Ya Realizada</h1>
+                <h1 style="color: var(--danger);">⛔ Evaluación ya realizada.</h1>
                 <p>El sistema registró que ya completaste este examen. Solo se permite un único intento.</p>
             `;
         }
@@ -253,7 +253,7 @@
 
             if (timeRemaining <= 0) {
                 clearInterval(timerInterval);
-                alert("¡Tiempo finalizado (30 minutos)! Se descargará tu informe automáticamente.");
+                alert("¡Tiempo finalizado! Se descargará tu informe automáticamente.");
                 finishExam(true);
             }
         }, 1000);
@@ -364,7 +364,7 @@
         ];
 
         let reportBody = `================================================================================\n`;
-        reportBody += `OFFICIAL EXAM REPORT - 5TH YEAR SECONDARY SCHOOL (CABA) | MODEL C\n`;
+        reportBody += `OFFICIAL EXAM REPORT\n`;
         reportBody += `[READ-ONLY PROTECTED DOCUMENT - DO NOT MODIFY]\n`;
         reportBody += `================================================================================\n\n`;
         reportBody += `Student Name:       ${studentName}\n`;
