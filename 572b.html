@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación de Inglés - 5° Año CABA (Modelo B)</title>
+    <style>
+        :root {
+            --primary: #064e3b;
+            --secondary: #059669;
+            --bg: #f1f5f9;
+            --text: #1e293b;
+            --danger: #dc2626;
+            --success: #16a34a;
+        }
+        * { box-sizing: border-box; user-select: none; }
+        input, textarea, select { user-select: text !important; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6;
+        }
+        #start-screen {
+            max-width: 620px; margin: 50px auto; background: white;
+            padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center;
+        }
+        .form-group { margin-bottom: 18px; text-align: left; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .form-group input {
+            width: 100%; padding: 12px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 16px;
+        }
+        .btn {
+            background: var(--secondary); color: white; border: none;
+            padding: 14px 28px; font-size: 16px; font-weight: bold;
+            border-radius: 6px; cursor: pointer; transition: 0.2s;
+        }
+        .btn:hover { background: #047857; }
+        .btn-danger { background: var(--danger); }
+        #exam-header {
+            display: none; position: fixed; top: 0; left: 0; width: 100%;
+            background: var(--primary); color: white; padding: 12px 30px; z-index: 1000;
+            justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .badge { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-weight: bold; }
+        .warning-badge { background: var(--danger); }
+        #exam-container {
+            display: none; max-width: 920px; margin: 85px auto 50px auto;
+            background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .reading-box {
+            background: #ecfdf5; border-left: 5px solid var(--secondary);
+            padding: 20px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        h2 { color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-top: 35px; display: flex; justify-content: space-between; align-items: center; }
+        .pts-tag { font-size: 13px; background: #e2e8f0; color: #334155; padding: 3px 10px; border-radius: 12px; }
+        .question-block { margin-bottom: 18px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+        input[type="text"], select, textarea {
+            padding: 8px 12px; border: 1px solid #94a3b8; border-radius: 4px; font-size: 15px; margin-top: 5px;
+        }
+        .full-input { width: 100%; }
+        .inline-input { width: 180px; }
+        #security-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.96); color: white; z-index: 9999;
+            flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="security-modal">
+    <h1 style="color: #ef4444; font-size: 2.3em;">⚠️ PENALIZACIÓN APLICADA (-0.50 PTS)</h1>
+    <p style="font-size: 1.15em; max-width: 600px;">Has abandonado la pantalla completa o cambiaste de pestaña. Esta infracción ha sido registrada y descontará <strong>0.50 puntos</strong> de tu calificación final.</p>
+    <button class="btn" onclick="returnToFullscreen()">Volver al Examen</button>
+</div>
+
+<div id="start-screen">
+    <h1 style="color: var(--primary); margin-bottom: 5px;">Evaluación de Inglés - 5° Año (CABA)</h1>
+    <p style="color: var(--secondary); font-weight: bold; margin-top: 0;">MODELO B: Urban Gardens & Sustainability</p>
+    <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 14px;">
+        <strong>⚠️ Condiciones de Evaluación:</strong>
+        <ul style="margin-bottom: 0;">
+            <li><strong>Tiempo límite:</strong> 30 minutos exactos.</li>
+            <li><strong>Intento único:</strong> No recargues ni cierres la ventana.</li>
+            <li><strong>Penalización:</strong> Cada salida de pantalla completa descuenta <strong>0.50 puntos</strong>.</li>
+            <li><strong>Entrega:</strong> Al finalizar se descargará un archivo <code>.txt</code> protegido (solo lectura) para subir a Classroom.</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label for="student-name">Apellido y Nombre:</label>
+        <input type="text" id="student-name" placeholder="Escribe tu apellido y nombre..." autocomplete="off">
+    </div>
+    <div class="form-group">
+        <label for="student-course">Curso y División:</label>
+        <input type="text" id="student-course" placeholder="Ej: 5° 2°" autocomplete="off">
+    </div>
+    <button type="button" class="btn" onclick="startExam()">Comenzar Evaluación</button>
+</div>
+
+<div id="exam-header">
+    <div><strong id="display-student"></strong> | <span id="display-course"></span></div>
+    <div>
+        <span class="badge">⏱️ <span id="timer">30:00</span></span>
+        <span class="badge warning-badge" style="margin-left: 10px;">⚠️ Salidas: <span id="exit-count">0</span> (-<span id="penalty-display">0.00</span> pts)</span>
+    </div>
+</div>
+
+<div id="exam-container">
+    <div class="reading-box">
+        <h3 style="margin-top:0; color:var(--primary);">Reading: Rooftop Gardens in Boedo</h3>
+        <p>Hello! My name is Camila Benítez, I am 16 years old, and I was born in San Cristóbal, although I now live in Boedo, Buenos Aires. I love gardening and cooking vegetarian dishes, and I am very good at composting organic waste. Next Saturday, my school group and I are hosting a workshop on urban agriculture for our neighbors. We have grown tomatoes, lettuce, and herbs on our school terrace since March, and we have already harvested fifty kilos of fresh vegetables.</p>
+        <p>Last year, our school terrace was completely empty and full of old desks. Therefore, we decided to build wooden planters using recycled pallets. While we were planting the first seeds, an agronomist from INTA walked by and gave us organic soil and irrigation pipes. If more neighbors start growing their own food, they will save money and eat healthier meals. However, our biology teacher reminded us: "Your plants won't survive the summer unless you water them every evening."</p>
+        <p>Nowadays, our fresh vegetables are used by the school kitchen every week, and natural fertilizers are being produced by our classmates. In my view, urban gardening is the most rewarding activity I have ever tried, and it is much cheaper than buying organic food at supermarkets. Tomorrow afternoon, I am meeting the school principal to ask for permission to expand our garden. I am sure our project is going to transform our neighborhood!</p>
+    </div>
+
+    <h2><span>1. Reading Comprehension: True or False (Justify ALL answers)</span> <span class="pts-tag">3.00 pts (1.50 Auto + 1.50 Docente)</span></h2>
+    <div class="question-block">
+        <p><strong>a)</strong> Camila still lives in San Cristóbal.</p>
+        <select id="q1a_tf"><option value="">Select...</option><option value="True">True</option><option value="False">False</option></select>
+        <input type="text" id="q1a_just" class="full-input" placeholder="Justification (corrección del profesor)...">
+    </div>
+    <div class="question-block">
+        <p><strong>b)</strong> They have already harvested fifty kilos of vegetables from the terrace.</p>
+        <select id="q1b_tf"><option value="">Select...</option><option value="True">True</option><option value="False">False</option></select>
+        <input type="text" id="q1b_just" class="full-input" placeholder="Justification (corrección del profesor)...">
+    </div>
+    <div class="question-block">
+        <p><strong>c)</strong> Camila is meeting the school principal tomorrow morning.</p>
+        <select id="q1c_tf"><option value="">Select...</option><option value="True">True</option><option value="False">False</option></select>
+        <input type="text" id="q1c_just" class="full-input" placeholder="Justification (corrección del profesor)...">
+    </div>
+
+    <h2><span>2. Personal Profile: 1st to 3rd Person (Present Simple)</span> <span class="pts-tag">1.00 pt (0.25 c/u)</span></h2>
+    <div class="question-block">
+        Camila Benítez <input type="text" id="q2_1" class="inline-input" placeholder="(be)"> 16 years old. She <input type="text" id="q2_2" class="inline-input" placeholder="(live)"> in Boedo. She <input type="text" id="q2_3" class="inline-input" placeholder="(love)"> gardening, and she <input type="text" id="q2_4" class="inline-input" placeholder="(not / eat)"> meat.
+    </div>
+
+    <h2><span>3. Vocabulary: Matching</span> <span class="pts-tag">1.00 pt (0.25 c/u)</span></h2>
+    <div class="question-block">
+        <p><strong>Definitions:</strong> A) Gather ripe crops from plants | B) System for supplying water to plants | C) Wooden containers for growing plants | D) Practical training session</p>
+        <p>1. Workshop: <input type="text" id="q3_1" style="width:50px;" maxlength="1"> &nbsp;&nbsp;
+           2. Harvest: <input type="text" id="q3_2" style="width:50px;" maxlength="1"> &nbsp;&nbsp;
+           3. Planters: <input type="text" id="q3_3" style="width:50px;" maxlength="1"> &nbsp;&nbsp;
+           4. Irrigation: <input type="text" id="q3_4" style="width:50px;" maxlength="1"></p>
+    </div>
+
+    <h2><span>4. Noun Phrase Analysis (Construcción Nominal)</span> <span class="pts-tag">0.50 pts (0.25 c/u)</span></h2>
+    <p>Analiza la construcción nominal: <strong>"the most rewarding activity"</strong></p>
+    <div class="question-block">
+        <p>a) <strong>Núcleo (Head noun):</strong> <input type="text" id="q4_head" class="inline-input"></p>
+        <p>b) <strong>Pre-modificadores (Pre-modifiers):</strong> <input type="text" id="q4_mod" class="inline-input"></p>
+    </div>
+
+    <h2><span>5. Grammar in Context: Fill in the gaps</span> <span class="pts-tag">1.50 pts (0.25 c/u)</span></h2>
+    <div class="question-block">
+        <p>1. Last year, the students <input type="text" id="q5_1" class="inline-input" placeholder="(build)"> wooden planters. <em>(Past Simple)</em></p>
+        <p>2. We <input type="text" id="q5_2" class="inline-input" placeholder="(grow)"> tomatoes and lettuce since March. <em>(Present Perfect)</em></p>
+        <p>3. Look at those dark clouds! We <input type="text" id="q5_3" class="inline-input" placeholder="(not / need)"> to water the plants today. <em>(Prediction with evidence)</em></p>
+        <p>4. "These boxes are too heavy." - "Don't worry, I <input type="text" id="q5_4" class="inline-input" placeholder="(help)"> you carry them!" <em>(Spontaneous decision)</em></p>
+        <p>5. Next Saturday, our group <input type="text" id="q5_5" class="inline-input" placeholder="(host)"> a workshop for neighbors. <em>(Fixed arrangement)</em></p>
+        <p>6. Without water, the plants <input type="text" id="q5_6" class="inline-input" placeholder="(not / survive)"> the summer. <em>(Future Simple negative - won't)</em></p>
+    </div>
+
+    <h2><span>6. Conditionals (Type 0 & Type 1)</span> <span class="pts-tag">0.50 pts (0.25 c/u)</span></h2>
+    <div class="question-block">
+        <p>1. (Type 0) If plants don't get sunlight, they <input type="text" id="q6_1" class="inline-input" placeholder="(die)">.</p>
+        <p>2. (Type 1) If neighbors grow their own food, they <input type="text" id="q6_2" class="inline-input" placeholder="(save)"> money.</p>
+    </div>
+
+    <h2><span>7. Comparatives and Superlatives (Regular & Irregular)</span> <span class="pts-tag">0.50 pts (0.25 c/u)</span></h2>
+    <div class="question-block">
+        <p>1. Homegrown tomatoes taste <input type="text" id="q7_1" class="inline-input" placeholder="(good)"> than supermarket ones. <em>(Irregular comparative)</em></p>
+        <p>2. Throwing away food is <input type="text" id="q7_2" class="inline-input" placeholder="(bad)"> habit in modern cities. <em>(Irregular superlative)</em></p>
+    </div>
+
+    <h2><span>8. Active and Passive Voice</span> <span class="pts-tag">0.50 pts</span></h2>
+    <div class="question-block">
+        <p><strong>Active:</strong> The school kitchen uses our fresh vegetables every week.</p>
+        <p><strong>Passive:</strong> Our fresh vegetables <input type="text" id="q8_1" style="width: 450px;" placeholder="Completa la oración en voz pasiva..."></p>
+    </div>
+
+    <h2><span>9. Word Order & Question Formation</span> <span class="pts-tag">1.00 pt (0.50 c/u)</span></h2>
+    <div class="question-block">
+        <p>1. <em>Ordena la pregunta (Yes/No):</em> <strong>ever / you / grown / have / vegetables / ?</strong></p>
+        <input type="text" id="q9_1" class="full-input">
+        <p>2. <em>Ordena la pregunta (Wh-):</em> <strong>did / give / what / the agronomist / to the students / ?</strong></p>
+        <input type="text" id="q9_2" class="full-input">
+    </div>
+
+    <h2><span>10. Brief Production (Teacher Review)</span> <span class="pts-tag">0.50 pts (Docente)</span></h2>
+    <div class="question-block">
+        <p>Write 2-3 sentences in English about what you are going to do next weekend (intentions) and one personal prediction for your future:</p>
+        <textarea id="q10_open" rows="3" class="full-input" placeholder="Write your answer in English..."></textarea>
+    </div>
+
+    <div style="text-align: center; margin-top: 35px;">
+        <button type="button" class="btn btn-danger" style="font-size: 18px; padding: 16px 40px;" onclick="finishExam(false)">Finalizar Evaluación y Generar Informe (.txt)</button>
+    </div>
+</div>
+
+<script>
+    const EXAM_ID = "EVAL_5TO_NEW_MODELO_B";
+    const PENALTY_PER_EXIT = 0.50;
+    let studentName = "";
+    let studentCourse = "";
+    let startTime = null;
+    let exitCount = 0;
+    let timeRemaining = 30 * 60;
+    let timerInterval = null;
+    let examActive = false;
+
+    window.onload = function() {
+        if (localStorage.getItem(EXAM_ID + "_COMPLETED") === "true") {
+            document.getElementById("start-screen").innerHTML = `
+                <h1 style="color: var(--danger);">⛔ Evaluación Ya Realizada</h1>
+                <p>El sistema registró que ya completaste este examen. Solo se permite un único intento.</p>
+            `;
+        }
+    };
+
+    function startExam() {
+        studentName = document.getElementById("student-name").value.trim();
+        studentCourse = document.getElementById("student-course").value.trim();
+
+        if (!studentName || !studentCourse) {
+            alert("Por favor, ingresa tu Apellido, Nombre y Curso antes de iniciar.");
+            return;
+        }
+
+        let elem = document.documentElement;
+        if (elem.requestFullscreen) elem.requestFullscreen().catch(() => {});
+
+        document.getElementById("start-screen").style.display = "none";
+        document.getElementById("exam-header").style.display = "flex";
+        document.getElementById("exam-container").style.display = "block";
+        
+        document.getElementById("display-student").innerText = studentName;
+        document.getElementById("display-course").innerText = studentCourse;
+
+        startTime = new Date();
+        examActive = true;
+
+        startTimer();
+        activateSecurityListeners();
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            let mins = Math.floor(timeRemaining / 60);
+            let secs = timeRemaining % 60;
+            document.getElementById("timer").innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                alert("¡Tiempo finalizado (30 minutos)! Se descargará tu informe automáticamente.");
+                finishExam(true);
+            }
+        }, 1000);
+    }
+
+    function activateSecurityListeners() {
+        document.addEventListener("visibilitychange", () => { if (document.hidden && examActive) registerSecurityBreach(); });
+        document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && examActive) registerSecurityBreach(); });
+        document.addEventListener("contextmenu", e => { if (examActive) e.preventDefault(); });
+        document.addEventListener("keydown", e => {
+            if (!examActive) return;
+            if (e.key === "F12" || (e.ctrlKey && ["c","v","u","t","n"].includes(e.key.toLowerCase()))) e.preventDefault();
+        });
+    }
+
+    function registerSecurityBreach() {
+        exitCount++;
+        document.getElementById("exit-count").innerText = exitCount;
+        document.getElementById("penalty-display").innerText = (exitCount * PENALTY_PER_EXIT).toFixed(2);
+        document.getElementById("security-modal").style.display = "flex";
+    }
+
+    function returnToFullscreen() {
+        document.getElementById("security-modal").style.display = "none";
+        let elem = document.documentElement;
+        if (elem.requestFullscreen) elem.requestFullscreen().catch(() => {});
+    }
+
+    function normalize(str) {
+        return str.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '');
+    }
+
+    function checkAuto(userVal, validAnswers, points) {
+        let cleanUser = normalize(userVal);
+        if (!cleanUser) return { status: "UNANSWERED", icon: "❌", earned: 0, max: points, display: "(Empty)" };
+        let isMatch = validAnswers.some(ans => normalize(ans) === cleanUser);
+        if (isMatch) return { status: "CORRECT", icon: "✅", earned: points, max: points, display: userVal };
+        return { status: "INCORRECT", icon: "❌", earned: 0, max: points, display: userVal };
+    }
+
+    async function generateIntegrityHash(text) {
+        const msgBuffer = new TextEncoder().encode(text + "_SALT_CABA_5TO_2026");
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 24).toUpperCase();
+    }
+
+    async function finishExam(autoSubmitted) {
+        if (!autoSubmitted) {
+            if (!confirm("¿Confirmas la entrega de la evaluación? Se generará el informe final.")) return;
+        }
+
+        examActive = false;
+        clearInterval(timerInterval);
+        localStorage.setItem(EXAM_ID + "_COMPLETED", "true");
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+
+        const endTime = new Date();
+
+        const autoItems = [
+            { title: "1.a) Reading T/F Selection", res: checkAuto(document.getElementById("q1a_tf").value, ["False"], 0.50), correct: "False" },
+            { title: "1.b) Reading T/F Selection", res: checkAuto(document.getElementById("q1b_tf").value, ["True"], 0.50), correct: "True" },
+            { title: "1.c) Reading T/F Selection", res: checkAuto(document.getElementById("q1c_tf").value, ["False"], 0.50), correct: "False" },
+            { title: "2.1) 3rd Person Present Simple (be)", res: checkAuto(document.getElementById("q2_1").value, ["is"], 0.25), correct: "is" },
+            { title: "2.2) 3rd Person Present Simple (live)", res: checkAuto(document.getElementById("q2_2").value, ["lives"], 0.25), correct: "lives" },
+            { title: "2.3) 3rd Person Present Simple (love)", res: checkAuto(document.getElementById("q2_3").value, ["loves"], 0.25), correct: "loves" },
+            { title: "2.4) 3rd Person Present Simple (not / eat)", res: checkAuto(document.getElementById("q2_4").value, ["doesn't eat", "does not eat"], 0.25), correct: "doesn't eat" },
+            { title: "3.1) Matching: Workshop", res: checkAuto(document.getElementById("q3_1").value, ["d"], 0.25), correct: "D" },
+            { title: "3.2) Matching: Harvest", res: checkAuto(document.getElementById("q3_2").value, ["a"], 0.25), correct: "A" },
+            { title: "3.3) Matching: Planters", res: checkAuto(document.getElementById("q3_3").value, ["c"], 0.25), correct: "C" },
+            { title: "3.4) Matching: Irrigation", res: checkAuto(document.getElementById("q3_4").value, ["b"], 0.25), correct: "B" },
+            { title: "4.a) Noun Phrase - Head Noun", res: checkAuto(document.getElementById("q4_head").value, ["activity"], 0.25), correct: "activity" },
+            { title: "4.b) Noun Phrase - Pre-modifiers", res: checkAuto(document.getElementById("q4_mod").value, ["the most rewarding", "most rewarding"], 0.25), correct: "the most rewarding" },
+            { title: "5.1) Past Simple (build)", res: checkAuto(document.getElementById("q5_1").value, ["built"], 0.25), correct: "built" },
+            { title: "5.2) Present Perfect (grow)", res: checkAuto(document.getElementById("q5_2").value, ["have grown", "'ve grown"], 0.25), correct: "have grown" },
+            { title: "5.3) Prediction with evidence (not / need)", res: checkAuto(document.getElementById("q5_3").value, ["are not going to need", "aren't going to need"], 0.25), correct: "aren't going to need" },
+            { title: "5.4) Spontaneous decision (help)", res: checkAuto(document.getElementById("q5_4").value, ["will help", "'ll help"], 0.25), correct: "will help" },
+            { title: "5.5) Fixed arrangement (host)", res: checkAuto(document.getElementById("q5_5").value, ["is hosting", "are hosting"], 0.25), correct: "is hosting / are hosting" },
+            { title: "5.6) Future Simple negative (not / survive)", res: checkAuto(document.getElementById("q5_6").value, ["won't survive", "will not survive"], 0.25), correct: "won't survive" },
+            { title: "6.1) Conditional Type 0 (die)", res: checkAuto(document.getElementById("q6_1").value, ["die"], 0.25), correct: "die" },
+            { title: "6.2) Conditional Type 1 (save)", res: checkAuto(document.getElementById("q6_2").value, ["will save", "'ll save"], 0.25), correct: "will save" },
+            { title: "7.1) Irregular Comparative (good)", res: checkAuto(document.getElementById("q7_1").value, ["better"], 0.25), correct: "better" },
+            { title: "7.2) Irregular Superlative (bad)", res: checkAuto(document.getElementById("q7_2").value, ["the worst", "worst"], 0.25), correct: "the worst" },
+            { title: "8.1) Passive Voice (Our fresh vegetables...)", res: checkAuto(document.getElementById("q8_1").value, ["are used by the school kitchen every week", "are used every week by the school kitchen"], 0.50), correct: "are used by the school kitchen every week." },
+            { title: "9.1) Word Order - Yes/No Question", res: checkAuto(document.getElementById("q9_1").value, ["have you ever grown vegetables"], 0.50), correct: "Have you ever grown vegetables?" },
+            { title: "9.2) Word Order - Wh- Question", res: checkAuto(document.getElementById("q9_2").value, ["what did the agronomist give to the students"], 0.50), correct: "What did the agronomist give to the students?" }
+        ];
+
+        let correctItemsCount = 0;
+        let autoScoreEarned = 0;
+        let autoScoreMax = 0;
+
+        autoItems.forEach(item => {
+            if (item.res.status === "CORRECT") correctItemsCount++;
+            autoScoreEarned += item.res.earned;
+            autoScoreMax += item.res.max;
+        });
+
+        const percentage = ((correctItemsCount / autoItems.length) * 100).toFixed(1);
+        const totalPenalty = exitCount * PENALTY_PER_EXIT;
+        const netAutoScore = Math.max(0, autoScoreEarned - totalPenalty).toFixed(2);
+
+        const teacherItems = [
+            { title: "1.a) Justification (0.50 pts - Teacher Review)", val: document.getElementById("q1a_just").value.trim(), ref: "She was born in San Cristóbal, although she now lives in Boedo." },
+            { title: "1.b) Justification (0.50 pts - Teacher Review)", val: document.getElementById("q1b_just").value.trim(), ref: "They have already harvested fifty kilos of fresh vegetables." },
+            { title: "1.c) Justification (0.50 pts - Teacher Review)", val: document.getElementById("q1c_just").value.trim(), ref: "She is meeting the school principal tomorrow afternoon (not morning)." },
+            { title: "10) Brief Writing Production (0.50 pts - Teacher Review)", val: document.getElementById("q10_open").value.trim(), ref: "Open production using 'going to' + 'will' (Max 0.50 pts)." }
+        ];
+
+        let reportBody = `================================================================================\n`;
+        reportBody += `OFFICIAL EXAM REPORT - 5TH YEAR SECONDARY SCHOOL (CABA) | MODEL B\n`;
+        reportBody += `[READ-ONLY PROTECTED DOCUMENT - DO NOT MODIFY]\n`;
+        reportBody += `================================================================================\n\n`;
+        reportBody += `Student Name:       ${studentName}\n`;
+        reportBody += `Course / Division:  ${studentCourse}\n`;
+        reportBody += `Start Time:         ${startTime.toLocaleTimeString()}\n`;
+        reportBody += `End Time:           ${endTime.toLocaleTimeString()}\n`;
+        reportBody += `Fullscreen Exits:   ${exitCount} (Penalty applied: -${totalPenalty.toFixed(2)} pts)\n\n`;
+        reportBody += `--- AUTOMATIC GRADING SUMMARY ---\n`;
+        reportBody += `Correct Answers:    ${correctItemsCount} / ${autoItems.length} (${percentage}%)\n`;
+        reportBody += `Raw Auto Score:     ${autoScoreEarned.toFixed(2)} / ${autoScoreMax.toFixed(2)} pts\n`;
+        reportBody += `Net Auto Score:     ${netAutoScore} / 8.00 pts (after penalties)\n`;
+        reportBody += `Pending Teacher:    Up to 2.00 pts (Justifications + Writing)\n`;
+        reportBody += `================================================================================\n\n`;
+        reportBody += `SECTION A: AUTOMATICALLY GRADED ITEMS\n\n`;
+
+        autoItems.forEach(item => {
+            reportBody += `${item.title}\n`;
+            reportBody += `   Student Answer: ${item.res.display}  -->  ${item.res.icon} ${item.res.status} (${item.res.earned}/${item.res.max} pts)\n`;
+            reportBody += `   Correct Answer: ${item.correct}\n\n`;
+        });
+
+        reportBody += `================================================================================\n`;
+        reportBody += `SECTION B: TEACHER REVIEW REQUIRED (2.00 PTS TOTAL)\n\n`;
+
+        teacherItems.forEach(t => {
+            let statusTag = t.val ? "⚠️ PENDING TEACHER REVIEW" : "❌ UNANSWERED (0.00 pts)";
+            reportBody += `${t.title}\n`;
+            reportBody += `   Student Response: ${t.val || "(Empty)"}  -->  ${statusTag}\n`;
+            reportBody += `   Suggested Key:    ${t.ref}\n\n`;
+        });
+
+        const hash = await generateIntegrityHash(reportBody);
+        reportBody += `================================================================================\n`;
+        reportBody += `FINAL CALCULATED SCORE FORMULA: ${netAutoScore} (Auto) + [Teacher Score / 2.00] = _____ / 10.00\n`;
+        reportBody += `INTEGRITY SIGNATURE (ANTI-TAMPER SHA256): ${hash}\n`;
+        reportBody += `================================================================================\n`;
+
+        const blob = new Blob([reportBody], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement("a");
+        const safeName = studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        link.href = URL.createObjectURL(blob);
+        link.download = `READONLY_Report_5to_ModelB_${safeName}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        document.getElementById("exam-container").innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <h1 style="color: var(--success);">✅ ¡Evaluación Finalizada!</h1>
+                <p style="font-size: 18px;">Se descargó el archivo protegido: <strong>READONLY_Report_5to_ModelB_${safeName}.txt</strong></p>
+                <p><strong>Puntaje Automático Neto:</strong> ${netAutoScore} / 8.00 pts (+ hasta 2.00 pts de corrección docente).</p>
+                <p style="background: #fef9c3; padding: 15px; border-radius: 8px; border: 1px solid #fde047;">
+                    <strong>Importante:</strong> No intentes abrir ni modificar el archivo descargado; cuenta con firma digital de integridad. Súbelo directamente a <strong>Google Classroom</strong>.
+                </p>
+            </div>
+        `;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación Integradora de Inglés - 5° Año (CABA)</title>
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --text: #1e293b;
+            --card-bg: #ffffff;
+            --model-a: #2563eb; /* Azul */
+            --model-b: #059669; /* Verde */
+            --model-c: #7c3aed; /* Violeta */
+            --model-d: #e11d48; /* Rojo/Carmesí */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            max-width: 720px;
+            width: 100%;
+            padding: 45px 35px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        h1 {
+            color: #0f172a;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .instructions {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: #334155;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .grid-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 550px) {
+            .grid-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .model-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .model-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+            filter: brightness(1.06);
+        }
+
+        .model-btn:active {
+            transform: translateY(0);
+        }
+
+        .model-title {
+            font-size: 20px;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .model-topic {
+            font-size: 13px;
+            font-weight: normal;
+            opacity: 0.92;
+        }
+
+        .btn-a { background-color: var(--model-a); }
+        .btn-b { background-color: var(--model-b); }
+        .btn-c { background-color: var(--model-c); }
+        .btn-d { background-color: var(--model-d); }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Evaluación Integradora de Inglés</h1>
+    <p class="subtitle">5° Año de Nivel Secundario — Ciudad Autónoma de Buenos Aires</p>
+
+    <div class="instructions">
+        <strong>📌 Instrucciones antes de ingresar:</strong>
+        <ul style="margin-left: 18px; margin-top: 6px;">
+            <li>Selecciona <strong>únicamente el modelo asignado</strong> por tu docente (Azul, Verde, Violeta o Rojo).</li>
+            <li>Una vez que ingreses tus datos y presiones <em>"Comenzar Evaluación"</em>, tendrás <strong>30 minutos</strong> y un único intento.</li>
+            <li>Recuerda descargar el informe <code>.txt</code> al finalizar y adjuntarlo en <strong>Google Classroom</strong>.</li>
+        </ul>
+    </div>
+
+    <div class="grid-buttons">
+        <a href="572a.html" class="model-btn btn-a">
+            <span class="model-title">MODELO A (Azul)</span>
+            <span class="model-topic">Space & Satellites</span>
+        </a>
+
+        <a href="572b.html" class="model-btn btn-b">
+            <span class="model-title">MODELO B (Verde)</span>
+            <span class="model-topic">Urban Gardens & Sustainability</span>
+        </a>
+
+        <a href="572bc.html" class="model-btn btn-c">
+            <span class="model-title">MODELO C (Violeta)</span>
+            <span class="model-topic">Educational Robotics</span>
+        </a>
+
+        <a href="572d.html" class="model-btn btn-d">
+            <span class="model-title">MODELO D (Rojo)</span>
+            <span class="model-topic">Youth Filmmaking</span>
+        </a>
+    </div>
+
+    <div class="footer">
+        Departamento de Lenguas Extranjeras — Inglés | Evaluación Digital
+    </div>
+</div>
+
+</body>
+</html>
